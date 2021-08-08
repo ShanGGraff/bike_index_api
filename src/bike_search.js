@@ -1,14 +1,13 @@
 export default class BikeSearch {  
-  static getBasicSearch() {
-    return fetch(`https://bikeindex.org/api/v3/search?page=1&per_page=25&manufacturer=trek&colors=blue&location=IP&distance=10&stolenness=stolen`)
-      .then(function(response) {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response.json();
-      })
-      .catch(function(error) {
-        return error;
-      })
+  static async getBasicSearch(city, numberToReturn) {
+    try {
+      let response = await fetch(`https://bikeindex.org:443/api/v3/search?page=1&per_page=${numberToReturn}&location=${city}%2COR&distance=10&stolenness=proximity`);
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return response.json();
+      } catch(error) {
+    return error.message;
+      }
   }
 }

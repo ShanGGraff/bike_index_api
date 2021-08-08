@@ -4,29 +4,46 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/styles.css';
 import BikeSearch from './bike_search.js';
 
-// /*function clearFields() {
-//   $('#location').val("");
+// function clearFields() {
+//   $('bikeSearch').val("");
 //   $('.showErrors').text("");
-//   $('.showHumidity').text("");
-//   $('.showTemp').text("");
+//   $('.showFrame').text("");
+//   $('.showManufacturer').text("");
+//   $('.showTitle').text("");
+//   $('.showLocation').text("");
+
 // }
 
 function getElements(response) {
-  if (response.main) {
-    $('.showHumidity').text(`The humidity in ${response.name} is ${response.main.humidity}%`);
+  if (response.bikes) {
+    // let  = [];
+    console.log(response.bikes.length);
+    for (let i = 0; i <= response.bikes.length; i++) {
+      $('ul#showTitle').append(`<li>${response.bikes[i].title}</li>`);
+      $('ul#showManufacturer').append(`<li>${response.bikes[i].manufacturer_name}</li>`);
+      $('ul#showFrame').append(`<li>${response.bikes[i].frame_model}</li>`);
+      // $('.showDate').text(`${response.bikes[0].date_stolen}`);
+      $('.showLocation').append(`${response.bikes[i].stolen_location}`);
+      let image = response.bikes[i].large_img;
+      $('#showImg').attr("src", image);
+    }
   } else {
     $('.showErrors').text(`There was an error: ${response.message}`);
   }
 }
 
 
-// $('#gifSearch').click(function() {
-//   let search = $('#search').val();
-//   clearFields();
-//   let promise = GiphyService.getSearch(search);
-//   promise.then(function(response){
-//     const body = JSON.parse(response);
-//     let downSizedGif1 = body.data[0].images.downsized.url;
-//     $('#imageToShow').attr("src", downSizedGif1);
-//   });
-// });
+async function makeApiCall(city, numberToReturn) {
+  const response = await BikeSearch.getBasicSearch(city, numberToReturn);
+  getElements(response);
+}
+
+$(document).ready(function () {
+  $('#bikeIndex').click(function () {
+    let city = $('#bikeSearch').val();
+    let numberToReturn = $('#bikeSearchNumber').val();
+    console.log(city, numberToReturn);
+    // clearFields();
+    makeApiCall(city, numberToReturn);
+  });
+});
